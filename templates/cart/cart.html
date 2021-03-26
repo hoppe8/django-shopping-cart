@@ -1,0 +1,140 @@
+{# REPLACE "..." WITH THE NAME OF YOUR PROJECT #}
+{% extends ".../base.html" %}
+
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'cart/styles/cart.css'%}" type="text/css">
+{% endblock styles %}
+
+{% block title %}Shopping Cart{% endblock title %}
+
+{% block content %}
+{% if cart_info %}
+<h2 class="mb-3 mb-lg-4">Your Cart</h2>
+<div class="row">
+   <div class="col-xl-8">
+      <form action="" id="selection-form" class="needs-validation" method="POST" onsubmit="return false;" novalidate>
+         {% csrf_token %}
+         <table class="table table-borderless table-hover">
+            <thead>
+               <tr class="d-none d-md-table-row border-bottom">
+	          <th scope="col"><div><span>Product</div></span></th>
+	          <th scope="col"><div><span>Quantity</div></span></th>
+	          <th scope="col"><div><span>Price</span></div></th>
+               </tr>
+            </thead>
+                     
+            <tbody>
+               {% for item in cart_info %}
+               <tr class="table-row">
+	          <td class="table-left-col">
+		     <div class="form-inline">
+		        <a href="{{ item.product.product_abs_url }}">
+		           <img class="mr-3" style="width:120px; height:120px;" src="{% static 'products/media/'|add:item.product.product_image_name %}">
+		        </a>
+		        <div>
+			   <a href="{{ item.product.product_abs_url }}"><span>{{ item.product.product_name }}</span></a>
+			   {% if item.product.quantity %}
+			   <div><span><small>Size: {{ item.product.quantity }}</small></span></div>
+			   {% endif %}
+			   {% if item.product.in_stock %}
+			   <div><span><small>In Stock</small></span></div>
+			   {% else %}
+			   <div><span><small class="text-danger">Out of Stock</small></span></div>
+			   {% endif %}
+		        </div>
+	             </div>
+	          </td>
+
+                  <td class="table-right-col pt-0 pt-md-1">
+                     <p class="m-0 d-md-none"><strong>Quantity:</strong></p>
+		     <div class="form-inline mt-0 mt-md-5">
+			<div>
+     		           {% if item.item_quantity < 11 %}		           
+     		           <div id="item-dropdown-{{ item.number }}">{{ item.form.new_item_quantity }}</div>
+     		           <div id="item-input-{{ item.number }}" class="d-none">{{ item.form.new_item_quantity_input }}</div>
+     		           {% else %}
+     		           <div id="item-dropdown-{{ item.number }}" class="d-none">{{ item.form.new_item_quantity }}</div>
+     		           <div id="item-input-{{ item.number }}">{{ item.form.new_item_quantity_input }}</div>
+     		           {% endif %}
+			</div>
+
+     		        <div class="ml-2 p-1">
+     		           <button type="button" id="item-button-{{ item.number }}" class="btn border-0 p-0">
+     		              <span><img src="{% static 'cart/media/trash.svg' %}"/></span>
+     		           </button>
+     		        </div>
+		     </div>
+     	          </td>
+
+		  <td class="table-right-col pt-0 pt-md-2">
+		     <div class="mt-3 mt-md-5 float-right float-md-none">
+			<p class="m-0 d-md-none"><strong>Price:</strong></p>
+			<p class="m-0">${{ item.product.product_price }}</p>
+		     </div>
+		  </td>
+
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </form>
+   </div>
+
+   <div class="col-xl-4">
+      <div class="border bg-white shadow-sm p-3">
+         <h3>Order Summary</h3>
+         <table class="table table-borderless border-bottom">
+            <tr>
+	       <td><span>Subtotal</span></td>
+	       <td id="subtotal" class="float-right"><span>${{ request.session.cart_summary.subtotal | floatformat:2 }}</span></td>
+            </tr>
+
+            <tr>
+	       <td><span>Shipping</span></td>
+	       <td id="shipping" class="float-right"><span>${{ request.session.cart_summary.shipping | floatformat:2 }}</span></td>
+            </tr>
+      
+	    <tr>
+	       <td><span>Sales Tax Estimate</span></td>
+	       <td id="sales-tax-estimate" class="float-right"><span>${{ request.session.cart_summary.sales_tax_estimate | floatformat:2 }}</span></td>
+            </tr>
+      
+	    <tr>
+	       <td><span><strong>Order Total</strong></span></td>
+	       <td id="order-total" class="float-right"><span><strong>${{ request.session.cart_summary.order_total | floatformat:2 }}</span></strong></td>
+            </tr>
+         </table>
+      
+	 <a class="btn btn-primary w-100 mb-3"href="{% url 'checkout' %}"><img class="mr-1 mb-1" src="{% static 'cart/media/lock-white.svg' %}"/> Secure Checkout</a>
+
+      </div>
+   </div>
+</div>
+
+{% else %}
+<h2 class="mb-3 mb-lg-4">Your Cart is Empty!</h2>
+
+<div>
+   <center>
+      {% if not user.is_authenticated %}
+      <p class="mb-0">Have an account?</p>
+      <p><a class="light-link" href="{% url 'login' %}?next=/cart/">Log in</a> to access your items.</p>
+      {% else %}
+      <p>Check out some of the products on our <a class="light-link" href="{% url 'home' %}">home page</a>!</p>
+      {% endif %}
+   </center>
+</div>
+
+{% endif %}
+
+{% endblock content %}
+
+{% block scripts %}
+{% if cart_info %}
+<script src="{% static 'cart/scripts/edit_quantity.js' %}"></script>
+<script src="{% static 'cart/scripts/delete_item.js' %}"></script>
+<script src="{% static 'cart/scripts/limit_to_numbers.js' %}"></script>
+{% endif %}
+{% endblock scripts %}

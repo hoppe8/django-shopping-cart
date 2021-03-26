@@ -1,0 +1,26 @@
+/* Up to medium devices */
+@media only screen and (max-width: 767.98px){
+
+   .table-row {
+
+      display: flex;
+      flex-wrap: wrap;
+
+      border-bottom: 1px solid #dee2e6!important
+
+   }
+
+   .table-left-col {
+
+      width: 100%;
+      flex-wrap: nowrap;
+
+   }
+
+   .table-right-col {
+
+      width: 50%;
+
+   }
+ 
+}
