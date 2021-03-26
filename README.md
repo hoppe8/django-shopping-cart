@@ -1,5 +1,5 @@
 ﻿# Overview
-A Django Shopping Cart App with an asynchronous, responsive, minimalist, Bootstrap styled template. Supports both ```AnonymousUser``` sessions and authenticated ```User``` sessions. Easily adjustable to account for differing ```Product``` models.
+A Django shopping cart app with an asynchronous, responsive, minimalist, Bootstrap styled template. Supports both ```AnonymousUser``` sessions and authenticated ```User``` sessions. Easily adjustable to account for differing ```Product``` models.
 
 ## Requirements
 - Django 3.x <!-- tested with 3.1.4 -->
